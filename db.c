@@ -32,8 +32,8 @@ typedef enum { STATEMENT_INSERT, STATEMENT_SELECT } StatementType;
 #define COLUMN_EMAIL_SIZE 255
 typedef struct {
     uint32_t id;
-    char username[COLUMN_USERNAME_SIZE];
-    char email[COLUMN_EMAIL_SIZE];
+    char username[COLUMN_USERNAME_SIZE + 1];
+    char email[COLUMN_EMAIL_SIZE + 1];
 } Row;
 
 typedef struct 
@@ -100,8 +100,10 @@ Table* new_table() {
 }
 
 void free_table(Table* table) {
-    for (int i = 0; table->pages[i]; i++) {
-        free(table->pages[i]);
+    for (uint32_t i = 0; i < TABLE_MAX_PAGES; i++) {
+        if (table->pages[i] != NULL) {
+            free(table->pages[i]);
+        }
     }
     free(table);
 }
